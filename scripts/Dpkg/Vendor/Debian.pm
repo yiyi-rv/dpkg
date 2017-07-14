@@ -29,8 +29,6 @@ use Dpkg;
 use Dpkg::Gettext;
 use Dpkg::ErrorHandling;
 use Dpkg::Control::Types;
-use Dpkg::BuildOptions;
-use Dpkg::Arch qw(get_host_arch debarch_to_debtuple);
 
 use parent qw(Dpkg::Vendor::Default);
 
@@ -93,6 +91,8 @@ sub run_hook {
 
 sub _parse_feature_area {
     my ($self, $area, $use_feature) = @_;
+
+    require Dpkg::BuildOptions;
 
     # Adjust features based on user or maintainer's desires.
     my $opts = Dpkg::BuildOptions->new(envvar => 'DEB_BUILD_OPTIONS');
@@ -248,6 +248,10 @@ sub _add_sanitize_flags {
 
 sub _add_hardening_flags {
     my ($self, $flags) = @_;
+
+    require Dpkg::Arch;
+    Dpkg::Arch->import(qw(get_host_arch debarch_to_debtuple));
+
     my $arch = get_host_arch();
     my ($abi, $libc, $os, $cpu) = debarch_to_debtuple($arch);
 

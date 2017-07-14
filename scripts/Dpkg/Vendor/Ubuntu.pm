@@ -26,10 +26,7 @@ our $VERSION = '0.01';
 
 use Dpkg::ErrorHandling;
 use Dpkg::Gettext;
-use Dpkg::Path qw(find_command);
 use Dpkg::Control::Types;
-use Dpkg::BuildOptions;
-use Dpkg::Arch qw(debarch_eq get_host_arch);
 
 use parent qw(Dpkg::Vendor::Debian);
 
@@ -100,9 +97,15 @@ sub run_hook {
 
     } elsif ($hook eq 'update-buildflags') {
 	my $flags = shift @params;
+
+        require Dpkg::BuildOptions;
+
 	my $build_opts = Dpkg::BuildOptions->new();
 
 	if (!$build_opts->has('noopt')) {
+            require Dpkg::Arch;
+            Dpkg::Arch->import(qw(debarch_eq get_host_arch));
+
 	    if (debarch_eq(get_host_arch(), 'ppc64el')) {
 		for my $flag (qw(CFLAGS CXXFLAGS OBJCFLAGS OBJCXXFLAGS GCJFLAGS
 		                 FFLAGS FCFLAGS)) {
