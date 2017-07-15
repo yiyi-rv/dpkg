@@ -98,11 +98,15 @@ or $msgid_plural otherwise.
 use constant GETTEXT_CONTEXT_GLUE => "\004";
 
 BEGIN {
-    eval q{
-        pop @INC if $INC[-1] eq '.';
-        use Locale::gettext;
-    };
-    if ($@) {
+    my $use_gettext = $ENV{DPKG_NLS} // 1;
+    if ($use_gettext) {
+        eval q{
+            pop @INC if $INC[-1] eq '.';
+            use Locale::gettext;
+        };
+        $use_gettext = not $@;
+    }
+    if (not $use_gettext) {
         eval q{
             sub g_ {
                 return shift;
