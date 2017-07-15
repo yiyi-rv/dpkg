@@ -125,6 +125,8 @@ sub new {
     # Options set by the user override default values
     $$self->{$_} = $opts{$_} foreach keys %opts;
 
+    ${$self}->{out_order} = [ map { lc } @{${$self}->{out_order}} ];
+
     return $self;
 }
 
@@ -302,7 +304,7 @@ Identify a user field and retrieve its value.
 sub get_custom_field {
     my ($self, $name) = @_;
     my $key = $self->find_custom_field($name);
-    return $self->{$key} if defined $key;
+    return $self->{lc $key} if defined $key;
     return;
 }
 
@@ -344,7 +346,7 @@ sub output {
             } else {
                 $a cmp $b;
             }
-        } keys %$self;
+        } keys %{tied(%{$$self->{fields}})->[0]};
     } else {
         @keys = @{$$self->{in_order}};
     }
@@ -357,7 +359,7 @@ sub output {
 	    # Escape data to follow control file syntax
 	    my ($first_line, @lines) = split /\n/, $value;
 
-	    my $kv = "$key:";
+	    my $kv = field_capitalize($key) . ':';
 	    $kv .= ' ' . $first_line if length $first_line;
 	    $kv .= "\n";
 	    foreach (@lines) {
@@ -388,7 +390,7 @@ Define the order in which fields will be displayed in the output() method.
 sub set_output_order {
     my ($self, @fields) = @_;
 
-    $$self->{out_order} = [@fields];
+    $$self->{out_order} = [ map { lc } @fields ];
 }
 
 =item $c->apply_substvars($substvars)
@@ -488,7 +490,7 @@ sub STORE {
     my $parent = $self->[1];
     $key = lc($key);
     if (not exists $self->[0]->{$key}) {
-	push @{$parent->{in_order}}, field_capitalize($key);
+	push @{$parent->{in_order}}, $key;
     }
     $self->[0]->{$key} = $value;
 }
@@ -506,7 +508,7 @@ sub DELETE {
     $key = lc($key);
     if (exists $self->[0]->{$key}) {
 	delete $self->[0]->{$key};
-	@{$in_order} = grep { lc ne $key } @{$in_order};
+	@{$in_order} = grep { $_ ne $key } @{$in_order};
 	return 1;
     } else {
 	return 0;
@@ -517,7 +519,7 @@ sub FIRSTKEY {
     my $self = shift;
     my $parent = $self->[1];
     foreach my $key (@{$parent->{in_order}}) {
-	return $key if exists $self->[0]->{lc $key};
+	return field_capitalize($key) if exists $self->[0]->{$key};
     }
 }
 
@@ -525,9 +527,10 @@ sub NEXTKEY {
     my ($self, $last) = @_;
     my $parent = $self->[1];
     my $found = 0;
+    $last = lc $last;
     foreach my $key (@{$parent->{in_order}}) {
 	if ($found) {
-	    return $key if exists $self->[0]->{lc $key};
+	    return field_capitalize($key) if exists $self->[0]->{$key};
 	} else {
 	    $found = 1 if $key eq $last;
 	}
