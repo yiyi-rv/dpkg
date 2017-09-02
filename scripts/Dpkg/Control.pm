@@ -185,45 +185,33 @@ Dpkg::Control::Fields::field_ordered_list($type).
 
 =cut
 
+my %ctrl_name = (
+    CTRL_INFO_SRC() => g_('general section of control info file'),
+    CTRL_INFO_PKG() => g_("package's section of control info file"),
+    CTRL_CHANGELOG() => g_('parsed version of changelog'),
+    CTRL_COPYRIGHT_HEADER() => g_('header stanza of copyright file'),
+    CTRL_COPYRIGHT_FILES() => g_('files stanza of copyright file'),
+    CTRL_COPYRIGHT_HEADER() => g_('license stanza of copyright file'),
+    CTRL_TESTS() => g_("package's tests control file"),
+    CTRL_REPO_RELEASE() => g_("repository's Release file"),
+    CTRL_INDEX_SRC() => g_("entry in repository's Sources file"),
+    CTRL_INDEX_PKG() => g_("entry in repository's Packages file"),
+    CTRL_PKG_SRC() => g_('.dsc file'),
+    CTRL_PKG_DEB() => g_('control info of a .deb package'),
+    CTRL_FILE_BUILDINFO() => g_('build information file'),
+    CTRL_FILE_CHANGES() => g_('.changes file'),
+    CTRL_FILE_VENDOR() => g_('vendor file'),
+    CTRL_FILE_STATUS() => g_("entry in dpkg's status file"),
+);
+
 sub set_options {
     my ($self, %opts) = @_;
     if (exists $opts{type}) {
+
         my $t = $opts{type};
         $$self->{allow_pgp} = ($t & (CTRL_PKG_SRC | CTRL_FILE_CHANGES | CTRL_REPO_RELEASE)) ? 1 : 0;
         $$self->{drop_empty} = ($t & (CTRL_INFO_PKG | CTRL_INFO_SRC)) ?  0 : 1;
-        if ($t == CTRL_INFO_SRC) {
-            $$self->{name} = g_('general section of control info file');
-        } elsif ($t == CTRL_INFO_PKG) {
-            $$self->{name} = g_("package's section of control info file");
-        } elsif ($t == CTRL_CHANGELOG) {
-            $$self->{name} = g_('parsed version of changelog');
-        } elsif ($t == CTRL_COPYRIGHT_HEADER) {
-            $$self->{name} = g_('header stanza of copyright file');
-        } elsif ($t == CTRL_COPYRIGHT_FILES) {
-            $$self->{name} = g_('files stanza of copyright file');
-        } elsif ($t == CTRL_COPYRIGHT_HEADER) {
-            $$self->{name} = g_('license stanza of copyright file');
-        } elsif ($t == CTRL_TESTS) {
-            $$self->{name} = g_("package's tests control file");
-        } elsif ($t == CTRL_REPO_RELEASE) {
-            $$self->{name} = sprintf(g_("repository's %s file"), 'Release');
-        } elsif ($t == CTRL_INDEX_SRC) {
-            $$self->{name} = sprintf(g_("entry in repository's %s file"), 'Sources');
-        } elsif ($t == CTRL_INDEX_PKG) {
-            $$self->{name} = sprintf(g_("entry in repository's %s file"), 'Packages');
-        } elsif ($t == CTRL_PKG_SRC) {
-            $$self->{name} = sprintf(g_('%s file'), '.dsc');
-        } elsif ($t == CTRL_PKG_DEB) {
-            $$self->{name} = g_('control info of a .deb package');
-        } elsif ($t == CTRL_FILE_BUILDINFO) {
-            $$self->{name} = g_('build information file');
-        } elsif ($t == CTRL_FILE_CHANGES) {
-            $$self->{name} = sprintf(g_('%s file'), '.changes');
-        } elsif ($t == CTRL_FILE_VENDOR) {
-            $$self->{name} = g_('vendor file');
-        } elsif ($t == CTRL_FILE_STATUS) {
-            $$self->{name} = g_("entry in dpkg's status file");
-        }
+        $$self->{name} = $ctrl_name{$opts{type}} if exists $ctrl_name{$opts{type}};
         $self->set_output_order(field_ordered_list($opts{type}));
     }
 

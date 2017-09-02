@@ -125,7 +125,7 @@ sub new {
     # Options set by the user override default values
     $$self->{$_} = $opts{$_} foreach keys %opts;
 
-    ${$self}->{out_order} = [ map { lc } @{${$self}->{out_order}} ];
+#    ${$self}->{out_order} = [ map { lc } @{${$self}->{out_order}} ];
 
     return $self;
 }
@@ -487,10 +487,9 @@ sub FETCH {
 
 sub STORE {
     my ($self, $key, $value) = @_;
-    my $parent = $self->[1];
     $key = lc($key);
     if (not exists $self->[0]->{$key}) {
-	push @{$parent->{in_order}}, $key;
+        push @{$self->[1]->{in_order}}, $key;
     }
     $self->[0]->{$key} = $value;
 }
