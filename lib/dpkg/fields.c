@@ -113,7 +113,7 @@ f_filecharf(struct pkginfo *pkg, struct pkgbin *pkgbin,
             struct parsedb_state *ps,
             const char *value, const struct fieldinfo *fip)
 {
-  struct filedetails *fdp, **fdpp;
+  struct archivedetails *fdp, **fdpp;
   char *cpos, *space;
   int allowextend;
 
@@ -123,8 +123,8 @@ f_filecharf(struct pkginfo *pkg, struct pkgbin *pkgbin,
     parse_error(ps,
                 _("file details field '%s' not allowed in status file"),
                fip->name);
-  allowextend = !pkg->files;
-  fdpp = &pkg->files;
+  allowextend = !pkg->archives;
+  fdpp = &pkg->archives;
   cpos= nfstrsave(value);
   while (*cpos) {
     space = cpos;
@@ -138,7 +138,7 @@ f_filecharf(struct pkginfo *pkg, struct pkgbin *pkgbin,
         parse_error(ps,
                     _("too many values in file details field '%s' "
                       "(compared to others)"), fip->name);
-      fdp= nfmalloc(sizeof(struct filedetails));
+      fdp = nfmalloc(sizeof(struct archivedetails));
       fdp->next= NULL;
       fdp->name= fdp->msdosname= fdp->size= fdp->md5sum= NULL;
       *fdpp= fdp;

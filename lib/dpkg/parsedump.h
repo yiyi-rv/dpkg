@@ -89,7 +89,7 @@ bool parse_stanza(struct parsedb_state *ps, struct field_state *fs,
 #define STRUCTFIELD(klass, off, type) (*(type *)((uintptr_t)(klass) + (off)))
 
 #define PKGIFPOFF(f) (offsetof(struct pkgbin, f))
-#define FILEFOFF(f) (offsetof(struct filedetails, f))
+#define ARCHIVEFOFF(f) (offsetof(struct archivedetails, f))
 
 typedef void freadfunction(struct pkginfo *pkg, struct pkgbin *pkgbin,
                            struct parsedb_state *ps,
