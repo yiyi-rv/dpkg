@@ -205,6 +205,20 @@ struct pkginfo {
   struct dpkg_version configversion;
   struct pkgbin installed;
   struct pkgbin available;
+
+  /**
+   * files_list_valid  files  Meaning
+   * ----------------  -----  -------
+   * false             NULL   Not read yet, must do so if want them.
+   * false             !NULL  Read, but rewritten and now out of date. If want
+   *                          info must throw away old and reread file.
+   * true              !NULL  Read, all is OK.
+   * true              NULL   Read OK, but, there were no files.
+   */
+  bool files_list_valid;
+  off_t files_list_phys_offs;
+  struct fileinlist *files;
+
   struct perpackagestate *clientdata;
 
   struct archivedetails *archives;
