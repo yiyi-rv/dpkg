@@ -207,6 +207,7 @@ pkg_check_depcon(struct pkginfo *pkg, const char *pfilename)
 
   /* Check if anything is installed that we conflict with, or not installed
    * that we need. */
+  ensure_package_clientdata(pkg);
   pkg->clientdata->istobe = PKG_ISTOBE_INSTALLNEW;
 
   for (dsearch = pkg->available.depends; dsearch; dsearch = dsearch->next) {
@@ -1022,7 +1023,7 @@ pkg_remove_files_from_others(struct pkginfo *pkg, struct fileinlist *newfileslis
        * as requiring a reread. */
       write_filelist_except(otherpkg, &otherpkg->installed,
                             otherpkg->files, fnnf_elide_other_lists);
-      ensure_package_clientdata(otherpkg);
+
       debug(dbg_veryverbose, "process_archive overwrote from %s",
             pkg_name(otherpkg, pnaw_always));
     }

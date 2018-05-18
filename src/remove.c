@@ -75,6 +75,7 @@ static void checkforremoval(struct pkginfo *pkgtoremove,
     varbuf_snapshot(raemsgs, &raemsgs_state);
     ok= dependencies_ok(depender,pkgtoremove,raemsgs);
     if (ok == DEP_CHECK_HALT &&
+        depender->clientdata &&
         depender->clientdata->istobe == PKG_ISTOBE_REMOVE)
       ok = DEP_CHECK_DEFER;
     if (ok == DEP_CHECK_DEFER)
@@ -101,6 +102,8 @@ void deferred_remove(struct pkginfo *pkg) {
     if (!f_noact)
       modstatdb_note(pkg);
   }
+
+  ensure_package_clientdata(pkg);
 
   if (pkg->status == PKG_STAT_NOTINSTALLED) {
     sincenothing = 0;
