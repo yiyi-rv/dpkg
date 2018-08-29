@@ -8,10 +8,10 @@ rm -rf $report_out
 # This file is modified according to .gitlab-ci.yml
 apt update
 apt install -y eatmydata autoconf autopoint gettext automake libtool pkg-config libncurses5-dev
-apt install -y --no-install-recommends git ca-certificates
+apt install -y git ca-certificates
 apt build-dep -y .
-apt install -y --no-install-recommends libmodule-build-perl
-apt install -y --no-install-recommends \
+apt install -y libmodule-build-perl
+apt install -y \
       fakeroot gpg cppcheck aspell aspell-en i18nspector \
       libtest-strict-perl libtest-minimumversion-perl libtest-perl-critic-perl \
       libtest-pod-perl libtest-pod-coverage-perl libtest-spelling-perl \
