@@ -17,7 +17,12 @@ apt install -y \
       libtest-pod-perl libtest-pod-coverage-perl libtest-spelling-perl \
       libtest-synopsis-perl
 
-./autogen
+autoscan
+aclocal
+autoheader
+autoreconf
+automake --add-missing
+autoreconf -vif
 ./configure CC=kcc LD=kcc CFLAGS="-fissue-report=$json_out" 
 
 make -j`nproc`
