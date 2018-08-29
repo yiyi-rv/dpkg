@@ -7,7 +7,7 @@ rm -rf $report_out
 
 # This file is modified according to .gitlab-ci.yml
 apt update
-apt install -y eatmydata autoconf autopoint gettext automake libtool pkg-config libncurses5-dev
+apt install -y autoconf autopoint gettext automake libtool pkg-config libncurses5-dev apt-utils
 apt install -y git ca-certificates
 apt build-dep -y .
 apt install -y libmodule-build-perl
